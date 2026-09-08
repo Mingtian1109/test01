@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>每日心情打卡</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+		<style>
+			body{
+			    background: #f3f7fd;
+			    min-height: 100vh;
+			    font-family: "Microsoft Yahei";
+			}
+			.kuang{
+			    border-radius: 15px;
+			    box-shadow: 0 3px 10px #d2d9ee;
+			    border: none;
+			    background: #ffffff;
+			}
+			.kuang:hover{
+			    box-shadow: 0 5px 15px #c8d2ee;
+			}
+			.xinQing{
+			    font-size: 1.7rem;
+			    cursor: pointer;
+			    padding: 6px 12px;
+			    border-radius: 10px;
+			    border: 2px solid transparent;
+			    background: #f1f3f8;
+			}
+			.xinQing:hover{
+			    background: #e0e6f8;
+			}
+			.xinQing.xuanzhong{
+			    border-color: #5078e8;
+			    background: #e7edff;
+			}
+			.jiLuTiao{
+			    border-left: 5px solid #5078e8;
+			    border-radius: 10px;
+			    background: #f8faff;
+			    padding: 1rem;
+			    margin-bottom: 15px;
+			}
+			.shiJianBiao{
+			    display: inline-block;
+			    padding: 3px 8px;
+			    border-radius: 15px;
+			    background: #e0e6f8;
+			    color: #3c5fc9;
+			    font-size: 0.8rem;
+			}
+			.baocunBtn{
+			    background: #5078e8;
+			    border: none;
+			    padding: 11px;
+			    border-radius: 10px;
+			    color:white;
+			    width:100%;
+			    font-size:17px;
+			}
+			.baocunBtn:hover{
+			    background: #3c63d6;
+			}
+			.shanchuBtn{
+			    border-radius: 8px;
+			}
+			#textArea{
+			    border-radius: 10px;
+			    border: 1px solid #c9d4f0;
+			    padding: 10px 12px;
+			    resize: none;
+			    height: 140px;
+			    overflow-y: auto;
+			}
+			#textArea:focus{
+			    border-color: #5078e8;
+			    box-shadow: 0 0 0 3px #d6e0ff;
+			    outline: none;
+			}
+			.kongBaiTiShi{
+			    padding: 40px 10px;
+			    color: #777;
+			    text-align:center;
+			}
+			.biaoTi{
+			    color: #333;
+			    font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container py-5">
+		    <div class="row justify-content-center">
+		        <div class="col-12 text-center mb-5">
+		            <h1 class="biaoTi mb-2"><i class="bi bi-heart-fill text-primary"></i> 每日心情记录本</h1>
+		            <p class="text-secondary">记录每天发生的小事</p>
+		        </div>
+				
+		        <div class="col-lg-8 col-md-10 col-12 mb-5">
+		            <div class="card kuang p-5">
+		                <div class="mb-4">
+		                    <label class="form-label">今天发生的事</label>
+		                    <textarea id="textArea" class="form-control" placeholder="在这里写下今天的经历吧~"></textarea>
+		                </div>
+						
+		                <div class="mb-5">
+		                    <label class="form-label">选择今日心情</label>
+		                    <div class="d-flex gap-3 flex-wrap mt-2" id="allXinQing">
+		                        <span class="xinQing" data-val="😊">😊 愉悦</span>
+		                        <span class="xinQing" data-val="😌">😌 平和</span>
+		                        <span class="xinQing" data-val="🥳">🥳 狂喜</span>
+		                        <span class="xinQing" data-val="😔">😔 低落</span>
+		                        <span class="xinQing" data-val="😠">😠 烦躁</span>
+		                        <span class="xinQing" data-val="😢">😢 难过</span>
+		                        <span class="xinQing" data-val="😴">😴 疲惫</span>
+		                        <span class="xinQing" data-val="🤩">🤩 惊喜</span>
+		                    </div>
+		                    <input type="hidden" id="nowXinQing" value="">
+		                </div>
+		                <button id="save" class="baocunBtn">
+		                    <i class="bi bi-save2-fill me-2"></i>保存记录
+		                </button>
+		            </div>
+		        </div>
+		
+		        <div class="col-lg-8 col-md-10 col-12">
+		            <div class="card kuang p-5">
+		                <div class="d-flex justify-content-between align-items-center mb-4">
+		                    <h4 class="mb-0 text-dark"><i class="bi bi-journal-text text-primary"></i> 全部历史记录</h4>
+		                    <button id="shanchuAll" class="btn btn-outline-danger btn-sm rounded-pill">
+		                        <i class="bi bi-trash3-fill me-1"></i>清空所有
+		                    </button>
+		                </div>
+		                <div id="listBox">
+		                    <div class="kongBaiTiShi">
+		                        <i class="bi bi-book-heart fs-1 d-block mb-3 text-secondary opacity-50"></i>
+		                        <p>还没有记录，写一条试试吧！</p>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script>
+		    let cunChuName = "myXinQing";
+		    let xinqingBox = document.getElementById("allXinQing");
+		    let hideInput = document.getElementById("nowXinQing");
+		    let textInput = document.getElementById("textArea");
+		    let saveBtn = document.getElementById("save");
+		    let listDiv = document.getElementById("listBox");
+		    let deleteAllBtn = document.getElementById("shanchuAll");
+		
+		    xinqingBox.onclick = function(e){
+		        let target = e.target;
+		        if(target.className.indexOf("xinQing") != -1){
+		            let allQingkuang = document.querySelectorAll(".xinQing");
+		            for(let i = 0; i < allQingkuang.length; i++){
+		                allQingkuang[i].classList.remove("xuanzhong");
+		            }
+		            target.classList.add("xuanzhong");
+		            hideInput.value = target.getAttribute("data-val");
+		        }
+		    }
+		
+		    function getData(){
+		        let res = localStorage.getItem(cunChuName);
+		        if(res == null){
+		            return [];
+		        }
+		        return JSON.parse(res);
+		    }
+		
+		    function saveData(arr){
+		        localStorage.setItem(cunChuName, JSON.stringify(arr));
+		    }
+		
+		    function getNowTime(){
+		        let d = new Date();
+		        let year = d.getFullYear();
+		        let month = d.getMonth() + 1;
+		        let day = d.getDate();
+		        let h = d.getHours();
+		        let m = d.getMinutes();
+		
+		        if(month < 10){
+		            month = "0" + month;
+		        }
+		        if(day < 10){
+		            day = "0" + day;
+		        }
+		        if(h < 10){
+		            h = "0" + h;
+		        }
+		        if(m < 10){
+		            m = "0" + m;
+		        }
+		        return year + "-" + month + "-" + day + " " + h + ":" + m;
+		    }
+		
+		    function showRecord(){
+		        let arr = getData();
+		        if(arr.length == 0){
+		            listDiv.innerHTML = `
+		            <div class="kongBaiTiShi">
+		                <i class="bi bi-book-heart fs-1 d-block mb-3 text-secondary opacity-50"></i>
+		                <p>还没有记录，写一条试试吧！</p>
+		            </div>
+		            `;
+		            return;
+		        }
+		        let html = "";
+		        for(let i = arr.length - 1; i >= 0; i--){
+		            let item = arr[i];
+		            html = html + `
+		            <div class="jiLuTiao">
+		                <div class="d-flex justify-content-between align-items-start">
+		                    <div>
+		                        <div class="fs-2 mb-2">${item.qq}</div>
+		                        <p class="mb-3">${item.nr}</p>
+		                        <span class="shiJianBiao"><i class="bi bi-clock"></i> ${item.sj}</span>
+		                    </div>
+		                    <button class="btn btn-sm btn-danger shanchuBtn ms-2" data-id="${i}">删除</button>
+		                </div>
+		            </div>
+		            `;
+		        }
+		        listDiv.innerHTML = html;
+		
+		        let deleteBtns = document.querySelectorAll(".shanchuBtn");
+		        for(let k = 0; k < deleteBtns.length; k++){
+		            deleteBtns[k].onclick = function(){
+		                let num = this.getAttribute("data-id");
+		                let dataArr = getData();
+		                dataArr.splice(num, 1);
+		                saveData(dataArr);
+		                showRecord();
+		            }
+		        }
+		    }
+		
+		    saveBtn.onclick = function(){
+		        let content = textInput.value.trim();
+		        let xinqing = hideInput.value;
+		        if(content == ""){
+		            alert("请输入今天发生的事情！");
+		            return;
+		        }
+		        if(xinqing == ""){
+		            alert("请选择一个心情！");
+		            return;
+		        }
+		        let info = {
+		            nr: content,
+		            qq: xinqing,
+		            sj: getNowTime()
+		        };
+		        let list = getData();
+		        list.push(info);
+		        saveData(list);
+				
+		        textInput.value = "";
+		        hideInput.value = "";
+		        let allXinqing = document.querySelectorAll(".xinQing");
+		        for(let a = 0; a < allXinqing.length; a++){
+		            allXinqing[a].classList.remove("xuanzhong");
+		        }
+		        showRecord();
+		    }
+		
+		    deleteAllBtn.onclick = function(){
+		        if(confirm("确定要清空所有记录吗？删除后无法恢复！")){
+		            saveData([]);
+		            showRecord();
+		        }
+		    }
+		
+		    window.onload = function(){
+		        showRecord();
+		    }
+		</script>
+	</body>
+</html>
